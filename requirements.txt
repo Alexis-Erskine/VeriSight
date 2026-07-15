@@ -17,6 +17,5 @@ torchvision==0.20.1
 opencv-python-headless==4.10.0.84
 numpy==1.26.4
 Pillow
-facenet-pytorch==2.6.0
 
 reportlab==5.0.0
