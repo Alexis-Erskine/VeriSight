@@ -7,6 +7,7 @@ out/
 .env*.local
 .env.production
 .env.development
+.env.vercel
 
 # IDE / Editor
 .vscode/
@@ -18,6 +19,7 @@ out/
 # Uploads
 uploads/*
 !uploads/.gitkeep
+test_uploads/
 
 # ML model weights
 *.pth
@@ -30,6 +32,3 @@ Thumbs.db
 
 # Vercel
 .vercel
-
-.vercel
-.env*

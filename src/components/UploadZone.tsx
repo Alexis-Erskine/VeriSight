@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef, type ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
+import { upload } from "@vercel/blob/client";
 
 export default function UploadZone() {
   const router = useRouter();
@@ -35,13 +36,27 @@ export default function UploadZone() {
 
   const handleUpload = async () => {
     setError(null);
+
     if (mode === "file") {
       if (!file) { setError("Select a video file"); return; }
       setUploading(true);
       try {
-        const form = new FormData();
-        form.append("video", file);
-        const res = await fetch("/api/upload", { method: "POST", body: form });
+        const blob = await upload(file.name, file, {
+          access: "public",
+          handleUploadUrl: "/api/blob-upload",
+        });
+
+        const res = await fetch("/api/upload", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            url: blob.url,
+            filename: file.name,
+            size: file.size,
+            contentType: file.type,
+          }),
+        });
+
         const data = await res.json();
         if (!res.ok) { setError(data.error); return; }
         router.push(`/results/${data.id}`);
