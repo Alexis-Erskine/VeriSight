@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { handleUpload } from "@vercel/blob/server";
+import { handleUpload } from "@vercel/blob/client";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
