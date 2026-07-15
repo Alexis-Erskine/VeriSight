@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Detection Result{% endblock %}
 {% block content %}
-<div class="container" id="result-container">
+<div class="container" id="result-container" data-detection-id="{{ detection_id }}">
   <div class="loading-spinner">
     <div class="spinner"></div>
     <span class="loading-text">Loading analysis result...</span>
@@ -11,7 +11,8 @@
 {% block scripts %}
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const detectionId = '{{ detection_id }}';
+    const container = document.getElementById('result-container');
+    const detectionId = container.dataset.detectionId;
     if (detectionId) {
       loadResult(detectionId);
     }

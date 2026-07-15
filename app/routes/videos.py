@@ -7,7 +7,6 @@ from werkzeug.utils import secure_filename
 from app.extensions import db
 from app.models.uploaded_video import UploadedVideo
 from app.models.analysis_result import AnalysisResult
-from app.services.auth_service import login_required
 from app.services.video_service import VideoService
 from app.services.detection_service import DetectionService
 
@@ -15,8 +14,7 @@ videos_bp = Blueprint("videos", __name__)
 
 
 @videos_bp.route("/upload", methods=["POST"])
-@login_required
-def upload_video(current_user):
+def upload_video():
     if "video" not in request.files:
         return jsonify({"error": "No video file provided"}), 400
 
@@ -46,7 +44,6 @@ def upload_video(current_user):
     file_size = os.path.getsize(file_path)
 
     uploaded_video = UploadedVideo(
-        user_id=current_user.id,
         filename=stored_filename,
         original_filename=original_filename,
         file_size=file_size,
@@ -92,17 +89,8 @@ def upload_video(current_user):
 
 
 @videos_bp.route("/<analysis_id>/status", methods=["GET"])
-@login_required
-def get_status(current_user, analysis_id):
-    result = (
-        AnalysisResult.query
-        .join(UploadedVideo)
-        .filter(
-            AnalysisResult.id == analysis_id,
-            UploadedVideo.user_id == current_user.id,
-        )
-        .first()
-    )
+def get_status(analysis_id):
+    result = AnalysisResult.query.filter(AnalysisResult.id == analysis_id).first()
 
     if not result:
         return jsonify({"error": "Analysis not found"}), 404

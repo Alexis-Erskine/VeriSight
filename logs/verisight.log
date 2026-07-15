@@ -36,3 +36,7 @@
 2026-07-15 13:27:13,657 WARNING: Deepfake detector not available (No module named 'torch'). Video uploads will fail until torch/timm are installed. [in C:\Users\USER\Desktop\VeriSight\app\__init__.py:57]
 2026-07-15 13:48:36,981 INFO: VeriSight starting up [in C:\Users\USER\Desktop\VeriSight\app\__init__.py:92]
 2026-07-15 13:48:38,114 WARNING: Deepfake detector not available (No module named 'torch'). Video uploads will fail until torch/timm are installed. [in C:\Users\USER\Desktop\VeriSight\app\__init__.py:57]
+2026-07-15 14:27:50,327 INFO: VeriSight starting up [in C:\Users\USER\Desktop\VeriSight\app\__init__.py:91]
+2026-07-15 14:27:52,406 WARNING: Deepfake detector not available (No module named 'torch'). Video uploads will fail until torch/timm are installed. [in C:\Users\USER\Desktop\VeriSight\app\__init__.py:56]
+2026-07-15 14:28:24,844 INFO: VeriSight starting up [in C:\Users\USER\Desktop\VeriSight\app\__init__.py:91]
+2026-07-15 14:28:25,212 WARNING: Deepfake detector not available (No module named 'torch'). Video uploads will fail until torch/timm are installed. [in C:\Users\USER\Desktop\VeriSight\app\__init__.py:56]

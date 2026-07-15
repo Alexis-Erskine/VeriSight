@@ -30,10 +30,9 @@ def create_app(config_name=None):
     configure_logging(app)
     _ensure_upload_dir(app)
 
-    from app.extensions import db, migrate, bcrypt
+    from app.extensions import db, migrate
     db.init_app(app)
     migrate.init_app(app, db)
-    bcrypt.init_app(app)
 
     register_blueprints(app)
     register_error_handlers(app)
@@ -93,12 +92,10 @@ def configure_logging(app):
 
 
 def register_blueprints(app):
-    from app.routes.auth import auth_bp
     from app.routes.videos import videos_bp
     from app.routes.results import results_bp
     from app.routes.frontend import frontend_bp
 
-    app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(videos_bp, url_prefix="/api/videos")
     app.register_blueprint(results_bp, url_prefix="/api/results")
     app.register_blueprint(frontend_bp)
@@ -148,13 +145,11 @@ def register_error_handlers(app):
 def register_shell_context(app):
     @app.shell_context_processor
     def make_shell_context():
-        from app.models.user import User
         from app.models.uploaded_video import UploadedVideo
         from app.models.analysis_result import AnalysisResult
         from app.extensions import db
         return {
             "db": db,
-            "User": User,
             "UploadedVideo": UploadedVideo,
             "AnalysisResult": AnalysisResult,
         }

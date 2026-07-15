@@ -40,10 +40,9 @@ class TestRiskLevel:
 class TestPredictionLabel:
     """Boundary tests for the prediction_label property."""
 
-    def setup_result(self, db, sample_user, prediction):
+    def setup_result(self, db, prediction):
         from app.models.uploaded_video import UploadedVideo
         video = UploadedVideo(
-            user_id=sample_user.id,
             filename="pred.mp4",
             original_filename="pred.mp4",
             file_size=100,
@@ -66,12 +65,12 @@ class TestPredictionLabel:
         (0.99, "deepfake"),
         (1.0, "deepfake"),
     ])
-    def test_prediction_label_boundaries(self, db, sample_user, score, expected):
-        result = self.setup_result(db, sample_user, score)
+    def test_prediction_label_boundaries(self, db, score, expected):
+        result = self.setup_result(db, score)
         assert result.prediction_label == expected
 
-    def test_prediction_label_none(self, db, sample_user):
-        result = self.setup_result(db, sample_user, None)
+    def test_prediction_label_none(self, db):
+        result = self.setup_result(db, None)
         assert result.prediction_label is None
 
 

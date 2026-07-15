@@ -1,16 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Dashboard{% endblock %}
+{% block title %}Results{% endblock %}
 {% block content %}
 <div class="dashboard-page container">
   <div class="dashboard-header fade-in">
-    <h1>My Detections</h1>
+    <h1>Recent Detections</h1>
     <a href="/upload" class="btn btn-primary">+ Upload New Video</a>
   </div>
 
   <div id="detections-container">
     <div class="loading-spinner">
       <div class="spinner"></div>
-      <span class="loading-text">Loading your detections...</span>
+      <span class="loading-text">Loading detections...</span>
     </div>
   </div>
 </div>
@@ -20,23 +20,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
   const container = document.getElementById('detections-container');
-  const token = localStorage.getItem('token');
-
-  if (!token) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-icon">&#128274;</div>
-        <h3>Sign In Required</h3>
-        <p>Please sign in to view your detection history.</p>
-        <a href="/login" class="btn btn-primary btn-sm" style="margin-top:16px;display:inline-flex">Sign In</a>
-      </div>`;
-    return;
-  }
 
   try {
-    const res = await fetch('/api/results?page=1&per_page=20', {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const res = await fetch('/api/results?page=1&per_page=20');
     const data = await res.json();
 
     if (!res.ok) {

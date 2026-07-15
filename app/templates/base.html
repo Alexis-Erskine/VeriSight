@@ -8,6 +8,8 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>&#128065;</text></svg>">
 </head>
 <body>
+  <div id="three-bg"></div>
+
   <nav class="navbar">
     <a href="/" class="navbar-brand">
       <span class="logo-icon">VS</span>
@@ -21,11 +23,8 @@
     <div class="navbar-links">
       <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
       <a href="/upload" class="{% if request.path == '/upload' %}active{% endif %}">Upload</a>
-      <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">Dashboard</a>
+      <a href="/dashboard" class="{% if request.path == '/dashboard' %}active{% endif %}">Results</a>
       <a href="/about" class="{% if request.path == '/about' %}active{% endif %}">About</a>
-      <a href="/login" data-auth="guest" class="{% if request.path == '/login' %}active{% endif %}">Sign In</a>
-      <a href="/register" data-auth="guest" class="btn-cta">Get Started</a>
-      <a href="#" data-auth="authenticated" id="logout-btn" style="color:var(--danger)">Sign Out</a>
     </div>
   </nav>
 
@@ -53,16 +52,9 @@
     </div>
   </footer>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="{{ url_for('static', filename='js/three-scene.js') }}"></script>
   <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script>
-    document.getElementById('logout-btn')?.addEventListener('click', function(e) {
-      e.preventDefault();
-      localStorage.removeItem('token');
-      localStorage.removeItem('username');
-      localStorage.removeItem('user');
-      window.location.href = '/';
-    });
-  </script>
   {% block scripts %}{% endblock %}
 </body>
 </html>

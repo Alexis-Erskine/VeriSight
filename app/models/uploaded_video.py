@@ -8,9 +8,7 @@ class UploadedVideo(db.Model):
     __tablename__ = "uploaded_videos"
 
     id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    user_id = db.Column(
-        db.String(36), db.ForeignKey("users.id"), nullable=False, index=True
-    )
+    user_id = db.Column(db.String(36), nullable=True, index=True)
 
     filename = db.Column(db.String(512), nullable=False)
     original_filename = db.Column(db.String(255), nullable=False)
@@ -32,7 +30,7 @@ class UploadedVideo(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "user_id": self.user_id,
+            "user_id": self.user_id if self.user_id else None,
             "filename": self.filename,
             "original_filename": self.original_filename,
             "file_size": self.file_size,

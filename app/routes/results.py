@@ -3,26 +3,20 @@ from flask import Blueprint, request, jsonify, send_file
 from app.extensions import db
 from app.models.analysis_result import AnalysisResult
 from app.models.uploaded_video import UploadedVideo
-from app.services.auth_service import login_required
 from app.services.pdf_report import generate_report
 
 results_bp = Blueprint("results", __name__)
 
 
 @results_bp.route("", methods=["GET"])
-@login_required
-def list_results(current_user):
+def list_results():
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 10, type=int)
     per_page = min(per_page, 100)
 
     status_filter = request.args.get("status")
 
-    query = (
-        AnalysisResult.query
-        .join(UploadedVideo)
-        .filter(UploadedVideo.user_id == current_user.id)
-    )
+    query = AnalysisResult.query
 
     if status_filter:
         query = query.filter(AnalysisResult.status == status_filter)
@@ -40,17 +34,8 @@ def list_results(current_user):
 
 
 @results_bp.route("/<analysis_id>", methods=["GET"])
-@login_required
-def get_result(current_user, analysis_id):
-    result = (
-        AnalysisResult.query
-        .join(UploadedVideo)
-        .filter(
-            AnalysisResult.id == analysis_id,
-            UploadedVideo.user_id == current_user.id,
-        )
-        .first()
-    )
+def get_result(analysis_id):
+    result = AnalysisResult.query.filter(AnalysisResult.id == analysis_id).first()
 
     if not result:
         return jsonify({"error": "Analysis not found"}), 404
@@ -59,17 +44,8 @@ def get_result(current_user, analysis_id):
 
 
 @results_bp.route("/<analysis_id>/download", methods=["GET"])
-@login_required
-def download_report(current_user, analysis_id):
-    result = (
-        AnalysisResult.query
-        .join(UploadedVideo)
-        .filter(
-            AnalysisResult.id == analysis_id,
-            UploadedVideo.user_id == current_user.id,
-        )
-        .first()
-    )
+def download_report(analysis_id):
+    result = AnalysisResult.query.filter(AnalysisResult.id == analysis_id).first()
 
     if not result:
         return jsonify({"error": "Analysis not found"}), 404
@@ -86,17 +62,8 @@ def download_report(current_user, analysis_id):
 
 
 @results_bp.route("/<analysis_id>", methods=["DELETE"])
-@login_required
-def delete_result(current_user, analysis_id):
-    result = (
-        AnalysisResult.query
-        .join(UploadedVideo)
-        .filter(
-            AnalysisResult.id == analysis_id,
-            UploadedVideo.user_id == current_user.id,
-        )
-        .first()
-    )
+def delete_result(analysis_id):
+    result = AnalysisResult.query.filter(AnalysisResult.id == analysis_id).first()
 
     if not result:
         return jsonify({"error": "Analysis not found"}), 404
