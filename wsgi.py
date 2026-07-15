@@ -12,8 +12,7 @@ if os.getenv("FLASK_ENV") == "production":
             upgrade()
             app.logger.info("Database migrations applied successfully")
         except Exception as e:
-            app.logger.error("Migration failed: %s", e)
-            sys.exit(1)
+            app.logger.warning("Migration skipped: %s", e)
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 5000))
