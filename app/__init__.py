@@ -41,12 +41,24 @@ def create_app(config_name=None):
     register_template_context(app)
 
     with app.app_context():
-        from app.ml.model import XceptionDeepFakeDetector
         if not app.config.get("TESTING"):
-            detector = XceptionDeepFakeDetector()
-            app.config["DETECTOR"] = detector
+            _init_detector(app)
 
     return app
+
+
+def _init_detector(app):
+    try:
+        from app.ml.model import XceptionDeepFakeDetector
+        detector = XceptionDeepFakeDetector()
+        app.config["DETECTOR"] = detector
+        app.logger.info("Deepfake detector loaded successfully")
+    except ImportError as e:
+        app.logger.warning(
+            "Deepfake detector not available (%s). Video uploads will fail "
+            "until torch/timm are installed.",
+            e,
+        )
 
 
 def _init_production_static(app):
