@@ -1,28 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { put } from "@vercel/blob";
 import { analyzeVideo } from "@/lib/replicate";
-import { writeFile, mkdir } from "fs/promises";
-import { join } from "path";
-import { existsSync } from "fs";
 
-async function downloadYouTube(url: string): Promise<{ buffer: Buffer; filename: string }> {
-  const ytdl = await import("@distube/ytdl-core");
-  const info = await ytdl.default.getInfo(url);
-  const format = ytdl.default.chooseFormat(info.formats, {
-    quality: "lowest",
-    filter: "videoandaudio",
-  });
-  if (!format) throw new Error("No suitable format found");
-
-  const stream = ytdl.default(url, { format });
-  const chunks: Buffer[] = [];
-  for await (const chunk of stream) {
-    chunks.push(Buffer.from(chunk));
-  }
-  const buffer = Buffer.concat(chunks);
-  const title = info.videoDetails.title.replace(/[^a-zA-Z0-9]/g, "_").slice(0, 50);
-  return { buffer, filename: `${title}.mp4` };
+function extractYouTubeId(url: string): string {
+  const m = url.match(/(?:v=|\/)([\w-]{11})/);
+  return m ? m[1] : url.slice(-11);
 }
 
 export async function POST(request: NextRequest) {
@@ -32,35 +14,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "YouTube URL required" }, { status: 400 });
     }
 
-    const { buffer, filename } = await downloadYouTube(url);
-
-    let storageKey: string;
-    let filePath: string;
-
-    if (process.env.BLOB_READ_WRITE_TOKEN) {
-      const blob = await put(`youtube/${Date.now()}_${filename}`, buffer, {
-        access: "public",
-      });
-      storageKey = blob.url;
-      filePath = blob.url;
-    } else {
-      const uploadDir = join(process.cwd(), "uploads");
-      if (!existsSync(uploadDir)) {
-        await mkdir(uploadDir, { recursive: true });
-      }
-      const localPath = join(uploadDir, `${Date.now()}_${filename}`);
-      await writeFile(localPath, buffer);
-      storageKey = localPath;
-      filePath = localPath;
-    }
+    const videoId = extractYouTubeId(url);
+    const filename = `youtube_${videoId}.mp4`;
+    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
 
     const video = await prisma.uploadedVideo.create({
       data: {
         filename,
         originalFilename: filename,
-        fileSize: buffer.length,
-        filePath,
-        storageKey,
+        fileSize: 0,
+        filePath: url,
+        storageKey: thumbnailUrl,
         mimeType: "video/mp4",
         source: "youtube",
         youtubeUrl: url,
@@ -76,7 +40,7 @@ export async function POST(request: NextRequest) {
     });
 
     try {
-      const output = await analyzeVideo(storageKey);
+      const output = await analyzeVideo(thumbnailUrl);
 
       const prediction = output.prediction;
       const isDeepfake = prediction >= 0.5;

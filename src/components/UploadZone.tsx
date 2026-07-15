@@ -116,7 +116,7 @@ export default function UploadZone() {
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
           onClick={() => inputRef.current?.click()}
-          className={`glass glow-border flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-12 text-center transition-all ${
+          className={`glass glow-border flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-6 text-center transition-all sm:p-12 ${
             dragOver
               ? "border-verisight-400 bg-verisight-500/10"
               : "border-verisight-500/20 hover:border-verisight-500/40"

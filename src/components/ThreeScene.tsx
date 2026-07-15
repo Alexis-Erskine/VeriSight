@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, MeshDistortMaterial } from "@react-three/drei";
 import type * as THREE from "three";
 import { MathUtils } from "three";
 
-function TorusKnot() {
+function TorusKnot({ mobile }: { mobile: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
   useFrame(({ clock }) => {
@@ -21,21 +21,23 @@ function TorusKnot() {
         clock.getElapsedTime() * 0.1,
         0.05
       );
-      meshRef.current.position.z = Math.sin(clock.getElapsedTime() * 0.2) * 0.5;
+      if (!mobile) {
+        meshRef.current.position.z = Math.sin(clock.getElapsedTime() * 0.2) * 0.5;
+      }
     }
   });
 
   return (
     <Float speed={1.5} rotationIntensity={0.2} floatIntensity={0.3}>
-      <mesh ref={meshRef} scale={1.8}>
-        <torusKnotGeometry args={[1, 0.3, 128, 16]} />
+      <mesh ref={meshRef} scale={mobile ? 2.4 : 1.8}>
+        <torusKnotGeometry args={[1, 0.3, mobile ? 64 : 128, mobile ? 12 : 16]} />
         <MeshDistortMaterial
           color="#4f46e5"
           emissive="#6366f1"
           emissiveIntensity={0.3}
           roughness={0.2}
           metalness={0.8}
-          distort={0.15}
+          distort={mobile ? 0 : 0.15}
           speed={2}
         />
       </mesh>
@@ -43,7 +45,7 @@ function TorusKnot() {
   );
 }
 
-function Particles({ count = 800 }) {
+function Particles({ count = 800 }: { count: number }) {
   const positions = useMemo(() => {
     const pos = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
@@ -62,7 +64,6 @@ function Particles({ count = 800 }) {
   useFrame(({ clock }) => {
     if (ref.current) {
       ref.current.rotation.y = clock.getElapsedTime() * 0.02;
-      ref.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.01) * 0.05;
     }
   });
 
@@ -91,18 +92,27 @@ function Particles({ count = 800 }) {
 }
 
 export default function ThreeScene() {
+  const [mobile, setMobile] = useState(false);
+
+  useEffect(() => {
+    setMobile(window.innerWidth < 768);
+    const handler = () => setMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+
   return (
     <Canvas
-      camera={{ position: [0, 0, 6], fov: 50 }}
-      dpr={[1, 1.5]}
-      gl={{ antialias: true, alpha: true }}
+      camera={{ position: [0, 0, 6], fov: mobile ? 60 : 50 }}
+      dpr={mobile ? [1, 1] : [1, 1.5]}
+      gl={{ antialias: !mobile, alpha: true }}
       style={{ background: "transparent" }}
     >
       <ambientLight intensity={0.3} />
       <directionalLight position={[5, 5, 5]} intensity={0.8} />
       <directionalLight position={[-5, -5, -5]} intensity={0.3} color="#818cf8" />
-      <TorusKnot />
-      <Particles count={1000} />
+      <TorusKnot mobile={mobile} />
+      <Particles count={mobile ? 200 : 1000} />
     </Canvas>
   );
 }

@@ -29,7 +29,7 @@ export default function VerdictGauge({ prediction, confidence, riskLevel }: Verd
 
   return (
     <div className="glass glow-border rounded-2xl p-8 text-center">
-      <div className="relative mx-auto mb-6 h-48 w-48">
+      <div className="relative mx-auto mb-6 h-40 w-40 sm:h-48 sm:w-48">
         <svg className="h-full w-full -rotate-90" viewBox="0 0 200 200">
           <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(99,102,241,0.1)" strokeWidth="12" />
           <circle
@@ -43,7 +43,7 @@ export default function VerdictGauge({ prediction, confidence, riskLevel }: Verd
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-4xl font-bold tracking-tight" style={{ color: verdictColor }}>
+          <span className="text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: verdictColor }}>
             {score.toFixed(0)}%
           </span>
           <span className="mt-1 text-xs font-medium text-gray-400">
@@ -53,7 +53,7 @@ export default function VerdictGauge({ prediction, confidence, riskLevel }: Verd
       </div>
 
       <h2
-        className="mb-2 text-2xl font-bold tracking-tight"
+        className="mb-2 text-xl font-bold tracking-tight sm:text-2xl"
         style={{ color: verdictColor }}
       >
         {verdictText}

@@ -19,8 +19,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "replicate": "^1.0.0",
-    "three": "^0.176.0",
-    "@distube/ytdl-core": "^4.16.0"
+    "three": "^0.176.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
