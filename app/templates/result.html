@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Detection Result{% endblock %}
+{% block content %}
+<div class="container" id="result-container">
+  <div class="loading-spinner">
+    <div class="spinner"></div>
+    <span class="loading-text">Loading analysis result...</span>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const detectionId = '{{ detection_id }}';
+    if (detectionId) {
+      loadResult(detectionId);
+    }
+  });
+</script>
+{% endblock %}

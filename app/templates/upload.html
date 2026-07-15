@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Upload Video{% endblock %}
+{% block content %}
+<div class="upload-page container">
+  <div class="section-title fade-in">
+    <h2>Upload Video for Analysis</h2>
+    <p>Select a video file to analyze for deepfake indicators. Results appear within seconds.</p>
+  </div>
+
+  <div class="upload-zone fade-in-up delay-1" id="upload-zone">
+    <span class="upload-icon">&#128249;</span>
+    <h3>Drag &amp; Drop Video Here</h3>
+    <p>or click to browse &middot; MP4, AVI, MOV, MKV, WebM &middot; Up to 100 MB</p>
+    <input type="file" id="file-input" accept="video/mp4,video/x-msvideo,video/quicktime,video/x-matroska,video/webm,.mp4,.avi,.mov,.mkv,.webm">
+  </div>
+
+  <div class="upload-preview fade-in-up delay-2" id="upload-preview">
+    <span class="file-icon">&#128196;</span>
+    <div class="file-info">
+      <div class="file-name" id="file-name">filename.mp4</div>
+      <div class="file-size" id="file-size">0 MB</div>
+    </div>
+    <button class="btn btn-primary btn-sm" id="upload-btn">Upload &amp; Analyze</button>
+  </div>
+
+  <div class="progress-container" id="progress-container">
+    <div class="progress-bar-track">
+      <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+    <div class="progress-status">
+      <span id="progress-status">Uploading video...</span>
+      <span class="progress-percent" id="progress-percent">0%</span>
+    </div>
+  </div>
+
+  <div class="feature-grid" style="padding-top:60px">
+    <div class="card fade-in-up delay-3" style="cursor:default">
+      <div class="card-icon" style="background:var(--cyan-dim);color:var(--cyan)">&#128274;</div>
+      <h3>Privacy First</h3>
+      <p>Uploaded videos are processed securely and never shared. Results are private to your account.</p>
+    </div>
+    <div class="card fade-in-up delay-4" style="cursor:default">
+      <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">&#9889;</div>
+      <h3>Fast Processing</h3>
+      <p>Optimized frame sampling and efficient ML inference deliver results in seconds, not minutes.</p>
+    </div>
+    <div class="card fade-in-up delay-5" style="cursor:default">
+      <div class="card-icon" style="background:var(--success-dim);color:var(--success)">&#9989;</div>
+      <h3>Supported Formats</h3>
+      <p>MP4, AVI, MOV, MKV, and WebM. Maximum file size is 100 MB.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

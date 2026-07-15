@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sign In{% endblock %}
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card fade-in-up">
+    <h2>Welcome Back</h2>
+
+    <div class="form-error" id="login-error"></div>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" class="form-input"
+               placeholder="you@example.com" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-input"
+               placeholder="Enter your password" required autocomplete="current-password">
+      </div>
+
+      <button type="submit" class="form-submit">Sign In</button>
+    </form>
+
+    <div class="form-footer">
+      Don't have an account? <a href="/register">Create one</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

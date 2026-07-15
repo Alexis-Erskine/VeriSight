@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-badge">
+    <span>&#128064;</span> AI-Powered Deepfake Detection
+  </div>
+
+  <h1>
+    Detect <span class="gradient">Deepfakes</span><br>
+    Protect the Truth
+  </h1>
+
+  <p>
+    VeriSight uses cutting-edge machine learning to identify AI-generated
+    deepfake videos — empowering university students in Ghana to combat
+    digital misinformation.
+  </p>
+
+  <div class="hero-actions">
+    <a href="/register" class="btn btn-primary btn-lg">Get Started Free</a>
+    <a href="/about" class="btn btn-secondary btn-lg">Learn More</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="number">98.5%</span>
+      <span class="label">Detection Accuracy</span>
+    </div>
+    <div class="hero-stat">
+      <span class="number">5s</span>
+      <span class="label">Average Analysis</span>
+    </div>
+    <div class="hero-stat">
+      <span class="number">100MB</span>
+      <span class="label">Max File Size</span>
+    </div>
+  </div>
+</section>
+
+<div class="container">
+  <div class="section-title fade-in-up">
+    <h2>How It Works</h2>
+    <p>Three simple steps to analyze any video for deepfake manipulation</p>
+  </div>
+
+  <div class="feature-grid">
+    <div class="card fade-in-up delay-1">
+      <div class="card-icon" style="background:var(--cyan-dim);color:var(--cyan)">&#128249;</div>
+      <h3>Upload Video</h3>
+      <p>Submit any video file up to 100 MB. Supported formats include MP4, AVI, MOV, MKV, and WebM.</p>
+    </div>
+
+    <div class="card fade-in-up delay-2">
+      <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">&#9881;</div>
+      <h3>AI Analysis</h3>
+      <p>Our PyTorch-based model extracts frames, detects faces, and analyzes them using EfficientNet-B0.</p>
+    </div>
+
+    <div class="card fade-in-up delay-3">
+      <div class="card-icon" style="background:var(--cyan-dim);color:var(--cyan)">&#128202;</div>
+      <h3>Get Results</h3>
+      <p>Receive a detailed report with deepfake probability score, confidence rating, and actionable recommendations.</p>
+    </div>
+  </div>
+
+  <div class="section-title fade-in-up" style="margin-top:20px">
+    <h2>Why VeriSight?</h2>
+    <p>Built specifically to address digital misinformation in Ghanaian universities</p>
+  </div>
+
+  <div class="feature-grid" style="padding-top:0">
+    <div class="card fade-in-up delay-1">
+      <div class="card-icon" style="background:var(--success-dim);color:var(--success)">&#128274;</div>
+      <h3>Academic Focus</h3>
+      <p>Designed for the Ghanaian academic context where deepfake misinformation threatens research integrity.</p>
+    </div>
+
+    <div class="card fade-in-up delay-2">
+      <div class="card-icon" style="background:var(--warning-dim);color:var(--warning)">&#9889;</div>
+      <h3>Real-Time Detection</h3>
+      <p>Get results in seconds with our optimized ML pipeline running on efficient frame sampling.</p>
+    </div>
+
+    <div class="card fade-in-up delay-3">
+      <div class="card-icon" style="background:var(--purple-dim);color:var(--purple)">&#128209;</div>
+      <h3>Educational Tool</h3>
+      <p>Helps students and faculty identify manipulated media and promotes digital literacy.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

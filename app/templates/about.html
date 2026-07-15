@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}About{% endblock %}
+{% block content %}
+<div class="about-page container">
+  <div class="section-title fade-in">
+    <h2>About VeriSight</h2>
+    <p>Designing a Machine Learning-Based Bot for Deepfake Video Detection</p>
+  </div>
+
+  <div class="about-section fade-in-up delay-1">
+    <h2>The Problem</h2>
+    <p>
+      Digital misinformation powered by AI-generated deepfake videos poses a growing
+      threat to academic integrity and public discourse. University students in Ghana
+      are increasingly exposed to manipulated media that can spread false information,
+      damage reputations, and undermine trust in digital content.
+    </p>
+  </div>
+
+  <div class="about-section fade-in-up delay-2">
+    <h2>Our Solution</h2>
+    <p>
+      <span class="highlight">VeriSight</span> is a production-grade deepfake detection
+      platform that leverages state-of-the-art machine learning to analyze videos for
+      signs of AI manipulation. By combining <span class="highlight">EfficientNet-B0</span>
+      for frame-level analysis with <span class="highlight">MTCNN</span> for face detection,
+      VeriSight achieves high accuracy in identifying deepfake content.
+    </p>
+  </div>
+
+  <div class="about-section fade-in-up delay-3">
+    <h2>Technology Stack</h2>
+    <div class="tech-list">
+      <div class="tech-item">
+        <span class="tech-icon">&#127760;</span>
+        <span class="tech-name">Python 3.12</span>
+      </div>
+      <div class="tech-item">
+        <span class="tech-icon">&#9881;</span>
+        <span class="tech-name">Flask</span>
+      </div>
+      <div class="tech-item">
+        <span class="tech-icon">&#128218;</span>
+        <span class="tech-name">PyTorch</span>
+      </div>
+      <div class="tech-item">
+        <span class="tech-icon">&#128247;</span>
+        <span class="tech-name">OpenCV</span>
+      </div>
+      <div class="tech-item">
+        <span class="tech-icon">&#128451;</span>
+        <span class="tech-name">MTCNN</span>
+      </div>
+      <div class="tech-item">
+        <span class="tech-icon">&#128202;</span>
+        <span class="tech-name">EfficientNet</span>
+      </div>
+      <div class="tech-item">
+        <span class="tech-icon">&#128172;</span>
+        <span class="tech-name">PostgreSQL</span>
+      </div>
+      <div class="tech-item">
+        <span class="tech-icon">&#9729;</span>
+        <span class="tech-name">Railway</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="about-section fade-in-up delay-4">
+    <h2>Research Context</h2>
+    <p>
+      This project is a final-year cybersecurity research initiative addressing the
+      United Nations Sustainable Development Goal <span class="highlight">SDG 16</span>
+      (Peace, Justice and Strong Institutions) by combating misinformation through
+      technological innovation. The target audience is university students in Ghana
+      who face increasing exposure to AI-generated media manipulation.
+    </p>
+  </div>
+</div>
+{% endblock %}

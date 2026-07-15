@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+
+# Environment
+.env
+.env.local
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Test upload artifacts
+test_uploads/
+test_uploads/*
+
+# ML model weights
+*.pth
+*.pt
+weights/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Coverage / Reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Flask instance
+instance/
+
+# Railway
+.railway/
