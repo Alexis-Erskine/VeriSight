@@ -1,17 +1,12 @@
-# Python
-__pycache__/
-*.py[cod]
-*.egg-info/
-dist/
-build/
-*.egg
-.venv/
-venv/
-env/
-
-# Environment
+# Next.js / Node
+node_modules/
+.next/
+out/
 .env
 .env.local
+.env*.local
+.env.production
+.env.development
 
 # IDE / Editor
 .vscode/
@@ -24,10 +19,6 @@ env/
 uploads/*
 !uploads/.gitkeep
 
-# Test upload artifacts
-test_uploads/
-test_uploads/*
-
 # ML model weights
 *.pth
 *.pt
@@ -37,14 +28,8 @@ weights/
 .DS_Store
 Thumbs.db
 
-# Coverage / Reports
-htmlcov/
-.coverage
-.coverage.*
-coverage.xml
+# Vercel
+.vercel
 
-# Flask instance
-instance/
-
-# Railway
-.railway/
+.vercel
+.env*

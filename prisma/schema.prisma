@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model UploadedVideo {
+  id               String          @id @default(uuid())
+  filename         String
+  originalFilename String
+  fileSize         Int
+  filePath         String
+  storageKey       String          @default("")
+  mimeType         String?
+  source           String          @default("file")
+  youtubeUrl       String?
+  uploadedAt       DateTime        @default(now())
+  analysis         AnalysisResult?
+}
+
+model AnalysisResult {
+  id               String        @id @default(uuid())
+  videoId          String        @unique
+  video            UploadedVideo @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  filename         String
+  prediction       Float?
+  confidence       Float?
+  riskLevel        String?
+  framesAnalyzed   Int?
+  totalFrames      Int?
+  processingTimeMs Float?
+  status           String        @default("pending")
+  errorMessage     String?
+  createdAt        DateTime      @default(now())
+  completedAt      DateTime?
+}

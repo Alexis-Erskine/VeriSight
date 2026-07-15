@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --color-verisight-50: #eef2ff;
+  --color-verisight-100: #e0e7ff;
+  --color-verisight-200: #c7d2fe;
+  --color-verisight-300: #a5b4fc;
+  --color-verisight-400: #818cf8;
+  --color-verisight-500: #6366f1;
+  --color-verisight-600: #4f46e5;
+  --color-verisight-700: #4338ca;
+  --color-verisight-800: #3730a3;
+  --color-verisight-900: #312e81;
+  --color-surface: #0a0a1a;
+  --color-surface-light: #1a1a3e;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(99, 102, 241, 0.3) transparent;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: #f1f5f9;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.glass {
+  background: rgba(15, 15, 35, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.glass-hover:hover {
+  background: rgba(15, 15, 35, 0.75);
+  border-color: rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
+}
+
+.glow-border {
+  box-shadow:
+    0 0 15px rgba(99, 102, 241, 0.1),
+    0 0 30px rgba(99, 102, 241, 0.05),
+    inset 0 0 15px rgba(99, 102, 241, 0.05);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #818cf8, #c084fc, #818cf8);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px rgba(99, 102, 241, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+/* Custom file upload styling */
+input[type="file"]::file-selector-button {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  margin-right: 12px;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background: linear-gradient(135deg, #4338ca, #6d28d9);
+  transform: translateY(-1px);
+}
