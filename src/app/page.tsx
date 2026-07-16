@@ -2,20 +2,20 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-1 items-center justify-center px-6 py-20">
+    <div className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 sm:py-20">
       <div className="mx-auto max-w-3xl text-center">
         <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-verisight-500/20 bg-verisight-500/10 px-4 py-1.5 text-xs font-medium text-verisight-300">
           <span className="flex h-2 w-2 rounded-full bg-verisight-400 animate-pulse" />
           AI-Powered Detection
         </div>
 
-        <h1 className="text-gradient mb-6 text-5xl font-bold leading-tight tracking-tight sm:text-6xl lg:text-7xl">
+        <h1 className="text-gradient mb-6 text-4xl font-bold leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
           See Through
           <br />
           Synthetic Media
         </h1>
 
-        <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-gray-400">
+        <p className="mx-auto mb-10 max-w-xl text-base leading-relaxed text-gray-400 sm:text-lg">
           VeriSight uses machine learning to detect deepfakes and AI-generated
           video content. Upload a file or paste a YouTube link for instant
           forensic analysis.
@@ -42,7 +42,7 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="mt-20 grid gap-6 sm:grid-cols-3">
+        <div className="mt-12 grid gap-6 sm:mt-20 sm:grid-cols-3">
           {[
             {
               title: "Deep Learning",

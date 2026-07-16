@@ -27,7 +27,7 @@ export default async function ResultDetailPage({
   const isProcessing = result.status === "pending";
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16">
+    <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-16">
       <Link
         href="/results"
         className="mb-6 inline-flex items-center gap-1 text-sm text-gray-400 transition-colors hover:text-white"
@@ -38,12 +38,12 @@ export default async function ResultDetailPage({
         Back to History
       </Link>
 
-      <div className="mb-8 flex items-start justify-between">
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-gradient text-3xl font-bold tracking-tight">
+          <h1 className="text-gradient text-2xl font-bold tracking-tight sm:text-3xl">
             Analysis Result
           </h1>
-          <p className="mt-1 text-sm text-gray-400">{filename}</p>
+          <p className="mt-1 break-all text-sm text-gray-400">{filename}</p>
           <p className="text-xs text-gray-500">
             {new Date(result.createdAt).toLocaleString("en-US", {
               dateStyle: "long",
@@ -54,9 +54,9 @@ export default async function ResultDetailPage({
         {result.status === "completed" && prediction != null && (
           <a
             href={`/api/results/${id}/download`}
-            className="glass inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-verisight-600/80"
+            className="glass inline-flex items-center gap-2 self-start rounded-xl px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-verisight-600/80"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
             </svg>
             Download PDF Report
@@ -65,7 +65,7 @@ export default async function ResultDetailPage({
       </div>
 
       {isProcessing ? (
-        <div className="glass glow-border rounded-2xl p-12 text-center">
+        <div className="glass glow-border rounded-2xl p-6 text-center sm:p-12">
           <svg className="mx-auto mb-4 h-12 w-12 animate-spin text-verisight-400" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
