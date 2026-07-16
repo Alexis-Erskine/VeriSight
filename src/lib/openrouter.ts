@@ -1,4 +1,4 @@
-const MODEL = "meta-llama/llama-3.1-8b-instruct";
+const MODEL = "openai/gpt-oss-20b:free";
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 export interface AnalysisOutput {
