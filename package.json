@@ -13,7 +13,6 @@
     "@prisma/client": "^6.6.0",
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
-    "@vercel/blob": "^0.27.0",
     "next": "^15.3.0",
     "pdfkit": "^0.16.0",
     "react": "^19.1.0",

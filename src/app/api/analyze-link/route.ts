@@ -2,21 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { analyzeVideo } from "@/lib/replicate";
 
-function extractYouTubeId(url: string): string {
+function extractYouTubeId(url: string): string | null {
   const m = url.match(/(?:v=|\/)([\w-]{11})/);
-  return m ? m[1] : url.slice(-11);
+  return m ? m[1] : null;
+}
+
+function isYouTubeUrl(url: string): boolean {
+  return /youtube\.com|youtu\.be/i.test(url);
 }
 
 export async function POST(request: NextRequest) {
   try {
     const { url } = await request.json();
     if (!url || typeof url !== "string") {
-      return NextResponse.json({ error: "YouTube URL required" }, { status: 400 });
+      return NextResponse.json({ error: "URL is required" }, { status: 400 });
     }
 
-    const videoId = extractYouTubeId(url);
-    const filename = `youtube_${videoId}.mp4`;
-    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+    let filename: string;
+    let storageKey: string;
+    let source: string;
+
+    if (isYouTubeUrl(url)) {
+      const videoId = extractYouTubeId(url) ?? url.slice(-11);
+      filename = `youtube_${videoId}.mp4`;
+      storageKey = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+      source = "youtube";
+    } else {
+      const hostname = new URL(url).hostname.replace(/^www\./, "");
+      filename = `${hostname}_${Date.now()}`;
+      storageKey = url;
+      source = "link";
+    }
 
     const video = await prisma.uploadedVideo.create({
       data: {
@@ -24,9 +40,9 @@ export async function POST(request: NextRequest) {
         originalFilename: filename,
         fileSize: 0,
         filePath: url,
-        storageKey: thumbnailUrl,
+        storageKey,
         mimeType: "video/mp4",
-        source: "youtube",
+        source,
         youtubeUrl: url,
       },
     });
@@ -40,7 +56,7 @@ export async function POST(request: NextRequest) {
     });
 
     try {
-      const output = await analyzeVideo(thumbnailUrl, filename, "youtube");
+      const output = await analyzeVideo(url, filename, source);
 
       const prediction = output.prediction;
       const isDeepfake = prediction >= 0.5;
@@ -84,7 +100,7 @@ export async function POST(request: NextRequest) {
       });
     }
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : "YouTube analysis failed";
+    const msg = e instanceof Error ? e.message : "Analysis failed";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
