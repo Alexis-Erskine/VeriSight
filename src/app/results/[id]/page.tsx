@@ -108,6 +108,14 @@ export default async function ResultDetailPage({
             </dl>
           </div>
 
+          {result.analysisText && (
+            <div className="lg:col-span-2">
+              <div className="glass glow-border rounded-2xl p-6">
+                <h3 className="mb-2 text-sm font-semibold text-white">AI Analysis</h3>
+                <p className="text-sm leading-relaxed text-gray-300">{result.analysisText}</p>
+              </div>
+            </div>
+          )}
           <div className="lg:col-span-2">
             <div className="glass glow-border rounded-2xl p-6">
               <h3 className="mb-4 text-sm font-semibold text-white">Recommendations</h3>

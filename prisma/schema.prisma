@@ -32,6 +32,7 @@ model AnalysisResult {
   framesAnalyzed   Int?
   totalFrames      Int?
   processingTimeMs Float?
+  analysisText     String?
   status           String        @default("pending")
   errorMessage     String?
   createdAt        DateTime      @default(now())

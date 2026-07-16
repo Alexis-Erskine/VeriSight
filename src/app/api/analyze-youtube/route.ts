@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     });
 
     try {
-      const output = await analyzeVideo(thumbnailUrl);
+      const output = await analyzeVideo(thumbnailUrl, filename, "youtube");
 
       const prediction = output.prediction;
       const isDeepfake = prediction >= 0.5;
@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
           framesAnalyzed: output.frames_analyzed,
           totalFrames: output.total_frames,
           processingTimeMs: output.processing_time_ms,
+          analysisText: output.analysis_text,
           status: "completed",
           completedAt: new Date(),
         },

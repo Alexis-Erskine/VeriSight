@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    const output = await analyzeVideo(url);
+    const output = await analyzeVideo(url, filename, "file");
 
     const prediction = output.prediction;
     const isDeepfake = prediction >= 0.5;
@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
         framesAnalyzed: output.frames_analyzed,
         totalFrames: output.total_frames,
         processingTimeMs: output.processing_time_ms,
+        analysisText: output.analysis_text,
         status: "completed",
         completedAt: new Date(),
       },
