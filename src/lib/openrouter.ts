@@ -1,4 +1,4 @@
-const MODEL = "openai/gpt-oss-20b:free";
+export const OPENROUTER_MODEL = "openai/gpt-oss-20b:free";
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
 export interface AnalysisOutput {
@@ -70,7 +70,7 @@ Return ONLY valid JSON with these exact keys, no markdown. Example:
         "HTTP-Referer": "https://verisight-eta.vercel.app",
       },
       body: JSON.stringify({
-        model: MODEL,
+        model: OPENROUTER_MODEL,
         messages: [{ role: "user", content: prompt }],
         temperature: 0.7,
         max_tokens: 500,

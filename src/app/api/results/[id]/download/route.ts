@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateReportPdf } from "@/lib/pdf";
+import { generateAiAnalysis } from "@/lib/ai-analysis";
 
 export async function GET(
   _request: NextRequest,
@@ -17,6 +18,16 @@ export async function GET(
       return NextResponse.json({ error: "Result not available" }, { status: 404 });
     }
 
+    const ai = await generateAiAnalysis({
+      prediction: result.prediction,
+      confidence: result.confidence,
+      riskLevel: result.riskLevel,
+      verdict: result.prediction >= 0.5 ? "deepfake" : "authentic",
+      framesAnalyzed: result.framesAnalyzed,
+      totalFrames: result.totalFrames,
+      processingTimeMs: result.processingTimeMs,
+    });
+
     const pdfBuffer = await generateReportPdf({
       id: result.id,
       prediction: result.prediction,
@@ -26,7 +37,7 @@ export async function GET(
       totalFrames: result.totalFrames,
       processingTimeMs: result.processingTimeMs,
       createdAt: result.createdAt,
-      analysisText: result.analysisText,
+      ai,
     });
 
     const body = new Uint8Array(pdfBuffer);
