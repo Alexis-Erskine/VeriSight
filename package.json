@@ -13,6 +13,7 @@
     "@prisma/client": "^6.6.0",
     "@react-three/drei": "^10.0.0",
     "@react-three/fiber": "^9.0.0",
+    "hls.js": "^1.7.0",
     "next": "^15.3.0",
     "pdfkit": "^0.16.0",
     "react": "^19.1.0",
@@ -21,12 +22,12 @@
     "three": "^0.176.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
     "@types/node": "^22.0.0",
     "@types/pdfkit": "^0.13.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@types/three": "^0.176.0",
-    "@tailwindcss/postcss": "^4.1.0",
     "autoprefixer": "^10.4.0",
     "eslint": "^9.0.0",
     "eslint-config-next": "^15.3.0",
