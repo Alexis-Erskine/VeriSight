@@ -6,6 +6,7 @@ const links = [
   { href: "/", label: "Home" },
   { href: "/upload", label: "Upload" },
   { href: "/results", label: "History" },
+  { href: "/about", label: "About" },
   {
     href: "https://github.com/Alexis-Erskine/VeriSight",
     label: "GitHub",
