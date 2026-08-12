@@ -7,11 +7,6 @@ const links = [
   { href: "/upload", label: "Upload" },
   { href: "/results", label: "History" },
   { href: "/about", label: "About" },
-  {
-    href: "https://github.com/Alexis-Erskine/VeriSight",
-    label: "GitHub",
-    external: true,
-  },
 ];
 
 export default function Navbar() {
@@ -42,56 +37,31 @@ export default function Navbar() {
         </button>
 
         <div className="hidden items-center gap-6 text-sm font-medium text-gray-400 sm:flex">
-          {links.map((link) =>
-            link.external ? (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors hover:text-verisight-400"
-              >
-                {link.label}
-              </a>
-            ) : (
-              <a
-                key={link.href}
-                href={link.href}
-                className="transition-colors hover:text-verisight-400"
-              >
-                {link.label}
-              </a>
-            )
-          )}
+          {links.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              className="transition-colors hover:text-verisight-400"
+            >
+              {link.label}
+            </a>
+          ))}
         </div>
       </nav>
 
       {open && (
         <div className="border-t border-verisight-500/10 px-4 pb-4 pt-2 sm:hidden">
           <div className="flex flex-col gap-2">
-            {links.map((link) =>
-              link.external ? (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-verisight-500/10 hover:text-white"
-                >
-                  {link.label}
-                </a>
-              ) : (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-verisight-500/10 hover:text-white"
-                >
-                  {link.label}
-                </a>
-              )
-            )}
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="rounded-lg px-3 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-verisight-500/10 hover:text-white"
+              >
+                {link.label}
+              </a>
+            ))}
           </div>
         </div>
       )}
