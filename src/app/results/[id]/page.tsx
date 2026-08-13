@@ -98,6 +98,7 @@ export default async function ResultDetailPage({
                 ["Risk Level", (result.riskLevel ?? "unknown").toUpperCase()],
                 ["Verdict", isDf ? "Deepfake Detected" : "Likely Authentic"],
                 ["Frames Analyzed", `${result.framesAnalyzed ?? 0} / ${result.totalFrames ?? 0}`],
+                ["Method", result.method === "vision" ? "Frame/thumbnail + metadata" : "Metadata only"],
                 ["Processing Time", result.processingTimeMs ? `${(result.processingTimeMs / 1000).toFixed(1)}s` : "N/A"],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between">
@@ -113,6 +114,15 @@ export default async function ResultDetailPage({
               <div className="glass glow-border rounded-2xl p-6">
                 <h3 className="mb-2 text-sm font-semibold text-white">AI Analysis</h3>
                 <p className="text-sm leading-relaxed text-gray-300">{result.analysisText}</p>
+              </div>
+            </div>
+          )}
+          {result.method !== "vision" && result.status === "completed" && (
+            <div className="lg:col-span-2">
+              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-300">
+                Preliminary metadata-based assessment — no video content was examined. This result is a
+                provisional guess from the video&apos;s metadata and should not be treated as a definitive
+                deepfake verdict.
               </div>
             </div>
           )}

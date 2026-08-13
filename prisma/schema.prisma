@@ -33,6 +33,8 @@ model AnalysisResult {
   totalFrames      Int?
   processingTimeMs Float?
   analysisText     String?
+  method           String?        @default("metadata")
+  mediaExamined    Boolean        @default(false)
   status           String        @default("pending")
   errorMessage     String?
   createdAt        DateTime      @default(now())

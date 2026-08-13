@@ -31,6 +31,8 @@ export interface ReportData {
   totalFrames: number | null;
   processingTimeMs: number | null;
   createdAt: Date;
+  method?: string | null;
+  mediaExamined?: boolean;
   ai: AiAnalysisOutput;
 }
 
@@ -287,6 +289,7 @@ export async function generateReportPdf(result: ReportData): Promise<Buffer> {
     ["Verdict", isDf ? "Deepfake Detected" : "Likely Authentic"],
     ["Risk Level", riskLevel],
     ["Frames Analyzed", (result.framesAnalyzed ?? 0) + " / " + (result.totalFrames ?? 0)],
+    ["Method", result.method === "vision" ? "Frame/thumbnail + metadata" : "Metadata only"],
     ["Processing Time", result.processingTimeMs ? (result.processingTimeMs / 1000).toFixed(1) + "s" : "N/A"],
     ["Date Analyzed", new Date(result.createdAt).toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" })],
   ];
@@ -336,6 +339,23 @@ export async function generateReportPdf(result: ReportData): Promise<Buffer> {
     font: "Helvetica-Oblique",
     fontSize: 9.5,
   });
+
+  // ---------- Methodology note ----------
+  if (result.method !== "vision") {
+    ensureSpace(doc, result, 50);
+    textBox(
+      doc,
+      result,
+      "Note: this is a preliminary metadata-based assessment \u2014 no video content was examined. The result is a provisional estimate based on the video's metadata and should not be treated as a definitive deepfake verdict.",
+      {
+        fill: "#fffbeb",
+        stroke: "#fde68a",
+        accent: "#f59e0b",
+        color: "#92400e",
+        fontSize: 9,
+      }
+    );
+  }
 
   // ---------- Key Findings ----------
   ensureSpace(doc, result, 50);

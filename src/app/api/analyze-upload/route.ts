@@ -4,36 +4,33 @@ import { analyzeVideo } from "@/lib/replicate";
 
 export const maxDuration = 60;
 
-function extractYouTubeId(url: string): string | null {
-  const m = url.match(/(?:v=|\/)([\w-]{11})/);
-  return m ? m[1] : null;
-}
-
-function isYouTubeUrl(url: string): boolean {
-  return /youtube\.com|youtu\.be/i.test(url);
-}
+const MAX_FRAMES = 6;
+const MAX_FRAME_BYTES = 600 * 1024;
 
 export async function POST(request: NextRequest) {
   try {
-    const { url } = await request.json();
-    if (!url || typeof url !== "string") {
-      return NextResponse.json({ error: "URL is required" }, { status: 400 });
+    const body = await request.json();
+    const filename = typeof body.filename === "string" ? body.filename.trim() : "";
+    const frames: unknown = body.frames;
+
+    if (!filename || filename.length > 255) {
+      return NextResponse.json({ error: "Valid filename is required" }, { status: 400 });
     }
-
-    let filename: string;
-    let storageKey: string;
-    let source: string;
-
-    if (isYouTubeUrl(url)) {
-      const videoId = extractYouTubeId(url) ?? url.slice(-11);
-      filename = `youtube_${videoId}.mp4`;
-      storageKey = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-      source = "youtube";
-    } else {
-      const hostname = new URL(url).hostname.replace(/^www\./, "");
-      filename = `${hostname}_${Date.now()}`;
-      storageKey = url;
-      source = "link";
+    if (
+      !Array.isArray(frames) ||
+      frames.length === 0 ||
+      frames.length > MAX_FRAMES ||
+      !frames.every(
+        (f) =>
+          typeof f === "string" &&
+          f.startsWith("data:image/") &&
+          f.length < MAX_FRAME_BYTES * 1.4
+      )
+    ) {
+      return NextResponse.json(
+        { error: `Provide 1-${MAX_FRAMES} valid base64 image frames` },
+        { status: 400 }
+      );
     }
 
     const video = await prisma.uploadedVideo.create({
@@ -41,11 +38,10 @@ export async function POST(request: NextRequest) {
         filename,
         originalFilename: filename,
         fileSize: 0,
-        filePath: url,
-        storageKey,
+        filePath: "(client upload)",
+        storageKey: "(frames)",
         mimeType: "video/mp4",
-        source,
-        youtubeUrl: url,
+        source: "upload",
       },
     });
 
@@ -58,19 +54,20 @@ export async function POST(request: NextRequest) {
     });
 
     try {
-      const output = await analyzeVideo(url, filename, source);
+      const output = await analyzeVideo("", filename, "upload", frames as string[]);
 
       const prediction = output.prediction;
       const isDeepfake = prediction >= 0.5;
+      const riskLevel = isDeepfake
+        ? prediction >= 0.9 ? "critical" : prediction >= 0.75 ? "high" : "medium"
+        : "low";
 
       await prisma.analysisResult.update({
         where: { id: result.id },
         data: {
           prediction,
           confidence: output.confidence,
-          riskLevel: isDeepfake
-            ? prediction >= 0.9 ? "critical" : prediction >= 0.75 ? "high" : "medium"
-            : "low",
+          riskLevel,
           framesAnalyzed: output.frames_analyzed,
           totalFrames: output.total_frames,
           processingTimeMs: output.processing_time_ms,
@@ -87,9 +84,7 @@ export async function POST(request: NextRequest) {
         status: "completed",
         prediction,
         confidence: output.confidence,
-        riskLevel: isDeepfake
-          ? prediction >= 0.9 ? "critical" : prediction >= 0.75 ? "high" : "medium"
-          : "low",
+        riskLevel,
       });
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Analysis failed";

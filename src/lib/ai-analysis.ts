@@ -75,7 +75,7 @@ Keep a professional, objective tone. Where a number is not reported, say so inst
 {"interpretation":"The detection model returned a deepfake score of 87% with 92% confidence...","keyFindings":["The deepfake score of 87% indicates a strong likelihood of manipulation.","Model confidence of 92% supports the reliability of the assessment.","Analysis covered 45 of 120 frames, providing substantial coverage for the verdict."],"riskExplanation":"A high risk level means the content should be treated as unverified...","recommendations":["Treat the content as unverified until confirmed by a trusted source.","Do not share the content without verification.","Report it to platform moderators if it is spreading misinformation."],"executiveSummary":"VeriSight classified the content as a deepfake with an 87% deepfake score, 92% confidence and a high risk level."}`;
 }
 
-function extractJson(text: string): Record<string, unknown> | null {
+export function extractJson(text: string): Record<string, unknown> | null {
   const unfenced = text
     .trim()
     .replace(/^```(?:json)?\s*/i, "")

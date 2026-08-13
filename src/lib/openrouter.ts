@@ -1,6 +1,9 @@
+import { analyzeFrames } from "./vision-analysis";
+
 export const OPENROUTER_MODEL = "openai/gpt-oss-20b:free";
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 const META_TIMEOUT_MS = 8000;
+const LLM_TIMEOUT_MS = 25000;
 
 export interface AnalysisOutput {
   prediction: number;
@@ -9,12 +12,15 @@ export interface AnalysisOutput {
   total_frames: number;
   processing_time_ms: number;
   analysis_text: string;
+  method?: "vision" | "metadata";
+  mediaExamined?: boolean;
 }
 
-interface ContentMeta {
+export interface ContentMeta {
   title?: string;
   description?: string;
   author?: string;
+  ogImage?: string;
 }
 
 function parseScore(text: string): AnalysisOutput | null {
@@ -110,7 +116,24 @@ async function fetchPageMeta(pageUrl: string): Promise<ContentMeta> {
   return {
     title: title ? decodeEntities(title) : undefined,
     description: extractMetaTag(html, "og:description") ?? extractMetaTag(html, "description") ?? undefined,
+    ogImage: extractMetaTag(html, "og:image") ?? undefined,
   };
+}
+
+async function fetchImageAsDataUrl(imageUrl: string): Promise<string | null> {
+  const res = await fetchWithTimeout(imageUrl);
+  if (!res || !res.ok) return null;
+  const contentType = res.headers.get("content-type") ?? "";
+  if (!contentType.startsWith("image/")) return null;
+  const buf = Buffer.from(await res.arrayBuffer().catch(() => new ArrayBuffer(0)));
+  if (buf.length === 0 || buf.length > 80 * 1024) return null;
+  return `data:${contentType.split(";")[0]};base64,${buf.toString("base64")}`;
+}
+
+async function fetchYouTubeThumbnail(videoUrl: string): Promise<string | null> {
+  const videoId = videoUrl.match(/(?:v=|\/)([\w-]{11})/)?.[1] ?? videoUrl.slice(-11);
+  if (!/^[\w-]{11}$/.test(videoId)) return null;
+  return fetchImageAsDataUrl(`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`);
 }
 
 async function enrichMetadata(
@@ -168,7 +191,8 @@ Return ONLY valid JSON with these exact keys, no markdown. Example:
 export async function analyzeVideo(
   videoUrl: string,
   filename?: string,
-  source?: string
+  source?: string,
+  mediaImages?: string[]
 ): Promise<AnalysisOutput> {
   const apiKey = process.env.OPENROUTER_API_KEY;
 
@@ -178,43 +202,107 @@ export async function analyzeVideo(
 
   const meta = await enrichMetadata(videoUrl, source);
 
+  const mediaUrls: string[] = [...(mediaImages ?? [])];
+  if (mediaUrls.length === 0 && videoUrl) {
+    if (source === "youtube") {
+      const thumb = await fetchYouTubeThumbnail(videoUrl);
+      if (thumb) mediaUrls.push(thumb);
+    } else if (meta.ogImage) {
+      const image = await fetchImageAsDataUrl(meta.ogImage);
+      if (image) mediaUrls.push(image);
+    }
+  }
+
   const prompt = buildPrompt(filename, source, videoUrl, meta);
 
   try {
-    const res = await fetch(API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-        "HTTP-Referer": "https://verisight-eta.vercel.app",
-      },
-      body: JSON.stringify({
-        model: OPENROUTER_MODEL,
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.5,
-        max_tokens: 500,
-      }),
-    });
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), LLM_TIMEOUT_MS);
+    try {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          "HTTP-Referer": "https://verisight-eta.vercel.app",
+        },
+        body: JSON.stringify({
+          model: OPENROUTER_MODEL,
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.5,
+          max_tokens: 500,
+        }),
+        signal: ctrl.signal,
+      });
 
-    if (!res.ok) {
-      const err = await res.text().catch(() => "unknown");
-      return fallback(`API error ${res.status}: ${err}`);
+      if (!res.ok) {
+        const err = await res.text().catch(() => "unknown");
+        return finalize(fallback(`API error ${res.status}: ${err}`), mediaUrls, meta, filename, source);
+      }
+
+      const data = await res.json();
+      const content: string =
+        data?.choices?.[0]?.message?.content ?? "";
+
+      const parsed = parseScore(content);
+      if (parsed) {
+        return finalize(parsed, mediaUrls, meta, filename, source);
+      }
+
+      return finalize(fallback("Could not parse model response"), mediaUrls, meta, filename, source);
+    } finally {
+      clearTimeout(timer);
     }
-
-    const data = await res.json();
-    const content: string =
-      data?.choices?.[0]?.message?.content ?? "";
-
-    const parsed = parseScore(content);
-    if (parsed) {
-      return parsed;
-    }
-
-    return fallback("Could not parse model response");
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : "Request failed";
-    return fallback(msg);
+    return finalize(fallback(msg), mediaUrls, meta, filename, source);
   }
+}
+
+async function finalize(
+  metadata: AnalysisOutput,
+  mediaUrls: string[],
+  meta: ContentMeta,
+  filename?: string,
+  source?: string
+): Promise<AnalysisOutput> {
+  if (mediaUrls.length === 0) {
+    return {
+      ...metadata,
+      analysis_text:
+        metadata.analysis_text +
+        " This is a preliminary metadata-based assessment; no video content was examined.",
+      method: "metadata",
+      mediaExamined: false,
+    };
+  }
+
+  const vision = await analyzeFrames(mediaUrls, meta, filename, source);
+  if (!vision) {
+    return {
+      ...metadata,
+      method: "metadata",
+      mediaExamined: false,
+    };
+  }
+
+  const cues =
+    vision.cues.length > 0
+      ? " Cues identified: " + vision.cues.join("; ") + "."
+      : "";
+  return {
+    prediction: Math.min(
+      Math.max(metadata.prediction * 0.4 + vision.prediction * 0.6, 0),
+      1
+    ),
+    confidence: Math.min(metadata.confidence * 0.5 + vision.confidence * 0.5, 0.99),
+    frames_analyzed: mediaUrls.length,
+    total_frames: mediaUrls.length,
+    processing_time_ms: metadata.processing_time_ms + 3000,
+    analysis_text: vision.analysis_text + cues,
+    method: "vision",
+    mediaExamined: true,
+  };
 }
 
 function fallback(reason: string): AnalysisOutput {

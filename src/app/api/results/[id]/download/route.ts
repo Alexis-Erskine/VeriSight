@@ -37,6 +37,8 @@ export async function GET(
       totalFrames: result.totalFrames,
       processingTimeMs: result.processingTimeMs,
       createdAt: result.createdAt,
+      method: result.method,
+      mediaExamined: result.mediaExamined,
       ai,
     });
 

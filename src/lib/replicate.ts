@@ -5,7 +5,8 @@ export type { AnalysisOutput } from "./openrouter";
 export async function analyzeVideo(
   videoUrl: string,
   filename?: string,
-  source?: string
+  source?: string,
+  mediaImages?: string[]
 ) {
-  return openrouterAnalyze(videoUrl, filename, source);
+  return openrouterAnalyze(videoUrl, filename, source, mediaImages);
 }
