@@ -98,7 +98,7 @@ export default async function ResultDetailPage({
                 ["Risk Level", (result.riskLevel ?? "unknown").toUpperCase()],
                 ["Verdict", isDf ? "Deepfake Detected" : "Likely Authentic"],
                 ["Frames Analyzed", `${result.framesAnalyzed ?? 0} / ${result.totalFrames ?? 0}`],
-                ["Method", result.method === "vision" ? "Frame/thumbnail + metadata" : "Metadata only"],
+                ["Method", result.method === "xception" ? "Xception CNN + metadata" : result.method === "vision" ? "Frame/thumbnail + metadata" : "Metadata only"],
                 ["Processing Time", result.processingTimeMs ? `${(result.processingTimeMs / 1000).toFixed(1)}s` : "N/A"],
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between">

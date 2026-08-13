@@ -1,4 +1,5 @@
 import { analyzeFrames } from "./vision-analysis";
+import { runXception } from "./xception";
 
 export const OPENROUTER_MODEL = "openai/gpt-oss-20b:free";
 const API_URL = "https://openrouter.ai/api/v1/chat/completions";
@@ -12,7 +13,7 @@ export interface AnalysisOutput {
   total_frames: number;
   processing_time_ms: number;
   analysis_text: string;
-  method?: "vision" | "metadata";
+  method?: "xception" | "vision" | "metadata";
   mediaExamined?: boolean;
 }
 
@@ -278,6 +279,51 @@ async function finalize(
   }
 
   const vision = await analyzeFrames(mediaUrls, meta, filename, source);
+  const xception = await runXception(mediaUrls);
+
+  if (!vision && !xception) {
+    return {
+      ...metadata,
+      method: "metadata",
+      mediaExamined: false,
+    };
+  }
+
+  if (xception) {
+    const visionPart = vision
+      ? ` The vision model also reported: ${vision.analysis_text}${
+          vision.cues.length > 0 ? " Cues identified: " + vision.cues.join("; ") + "." : ""
+        }`
+      : "";
+    return {
+      prediction: Math.min(
+        Math.max(
+          xception.prediction * 0.55 +
+            (vision ? vision.prediction * 0.25 : 0) +
+            metadata.prediction * (vision ? 0.2 : 0.45),
+          0
+        ),
+        1
+      ),
+      confidence: Math.min(
+        xception.confidence * 0.5 +
+          (vision ? vision.confidence * 0.3 : 0) +
+          metadata.confidence * (vision ? 0.2 : 0.5),
+        0.99
+      ),
+      frames_analyzed: xception.framesAnalyzed,
+      total_frames: xception.framesAnalyzed,
+      processing_time_ms: metadata.processing_time_ms + 5000,
+      analysis_text: `The Xception CNN examined ${xception.framesAnalyzed} frame${
+        xception.framesAnalyzed === 1 ? "" : "s"
+      } (faces detected in ${xception.facesAnalyzed}) and reported a deepfake probability of ${(
+        xception.prediction * 100
+      ).toFixed(1)}%.${visionPart}`,
+      method: "xception",
+      mediaExamined: true,
+    };
+  }
+
   if (!vision) {
     return {
       ...metadata,

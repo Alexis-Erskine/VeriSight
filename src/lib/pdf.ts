@@ -289,7 +289,7 @@ export async function generateReportPdf(result: ReportData): Promise<Buffer> {
     ["Verdict", isDf ? "Deepfake Detected" : "Likely Authentic"],
     ["Risk Level", riskLevel],
     ["Frames Analyzed", (result.framesAnalyzed ?? 0) + " / " + (result.totalFrames ?? 0)],
-    ["Method", result.method === "vision" ? "Frame/thumbnail + metadata" : "Metadata only"],
+    ["Method", result.method === "xception" ? "Xception CNN + metadata" : result.method === "vision" ? "Frame/thumbnail + metadata" : "Metadata only"],
     ["Processing Time", result.processingTimeMs ? (result.processingTimeMs / 1000).toFixed(1) + "s" : "N/A"],
     ["Date Analyzed", new Date(result.createdAt).toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" })],
   ];
